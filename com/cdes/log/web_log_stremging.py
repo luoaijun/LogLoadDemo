@@ -4,7 +4,7 @@
 import random
 import time
 
-from com.cdes.utils.DateUtils import DateUtil
+from com.cdes.service.DataWriter import DateUtil
 
 
 class WebStreming(object):

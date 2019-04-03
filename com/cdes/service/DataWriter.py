@@ -2,6 +2,9 @@
 import time
 import os.path
 
+from com.cdes.utils.HdfsUtils import HDFS
+
+
 class DateUtil:
     def getFileByDate(self,message):
         #获得当前系统时间的字符串
@@ -21,9 +24,10 @@ class DateUtil:
         fileDay=fileMonth+'/'+day
 
         if not os.path.exists(fileYear):
-            os.mkdir(fileYear)
-            os.mkdir(fileMonth)
-            os.mkdir(fileDay)
+            hdfs = HDFS()
+            hdfs.mkdirs(fileYear)
+            hdfs.mkdirs(fileMonth)
+            hdfs.mkdirs(fileDay)
         else:
             if not os.path.exists(fileMonth):
                 os.mkdir(fileMonth)
