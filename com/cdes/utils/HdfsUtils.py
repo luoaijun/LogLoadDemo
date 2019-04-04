@@ -8,7 +8,6 @@ from hdfs.client import Client, InsecureClient
 
 class HDFS:
     # 读取hdfs文件内容,将每行存入数组返回
-    client = InsecureClient("http://10.0.75.1:50070/", user='hdfs')
 
     def read_hdfs_file(client, filename):
         # with client.read('samples.csv', encoding='utf-8', delimiter='\n') as reader:
@@ -44,8 +43,9 @@ class HDFS:
             client.rm(remotepath, recursive=True)
 
     # 删除hdfs文件
-    def delete_hdfs_file(client, hdfs_path):
-        client.delete(hdfs_path)
+    def delete_hdfs_file(self,client, hdfs_path):
+        if self.exists(hdfs_path):
+            client.delete(hdfs_path)
 
     # 上传文件到hdfs
     def put_to_hdfs(client, local_path, hdfs_path):
@@ -69,6 +69,7 @@ class HDFS:
 
     # 返回目录下的文件
     def list(client, hdfs_path):
+
         return client.list(hdfs_path, status=False)
 
 
