@@ -23,29 +23,22 @@ class HDFS:
 
     # 创建目录
     def mkdirs(self, client, hdfs_path):
-        if not self.exists(hdfs_path):
-            client.makedirs(hdfs_path)
+        client.makedirs(hdfs_path)
 
     def get(self, client, remotepath, localpath):
-        if self.exists(remotepath):
-            client.get(remotepath, localpath)
+        client.get(remotepath, localpath)
 
     def put(self, client, localfile, remotefile):
         dir = self.getDirPath(remotefile)
         self.mkdir(dir)
         client.put(localfile, remotefile)
 
-    def exists(self, client, remotepath):
-        return client.exists(remotepath)
-
     def delete(self, client, remotepath):
-        if self.exists(remotepath):
-            client.rm(remotepath, recursive=True)
+        client.rm(remotepath, recursive=True)
 
     # 删除hdfs文件
-    def delete_hdfs_file(self,client, hdfs_path):
-        if self.exists(hdfs_path):
-            client.delete(hdfs_path)
+    def delete_hdfs_file(self, client, hdfs_path):
+        client.delete(hdfs_path)
 
     # 上传文件到hdfs
     def put_to_hdfs(client, local_path, hdfs_path):
@@ -69,7 +62,6 @@ class HDFS:
 
     # 返回目录下的文件
     def list(client, hdfs_path):
-
         return client.list(hdfs_path, status=False)
 
 

@@ -4,10 +4,10 @@
 import random
 import time
 
-from com.cdes.service.DataWriter import DateUtil
+from com.cdes.dao.DataWriterHdfs import DateUtil
 
 
-class WebStreming(object):
+class WebLog(object):
     # 类属性，由所有类的对象共享
     site_url_base = "http://www.xxx.com/"
 
@@ -63,12 +63,13 @@ class WebStreming(object):
                 ip=self.sample_ip(), local_time=time_str, url=self.sample_url(), refer=self.sample_refer(),
                 user_agent=self.sample_user_agent())
             print(query_log)
+            dateWriter.getFileByDate(query_log)
             count = count - 1
 
 
 if __name__ == "__main__":
-    web_log = WebStreming()
+    web_log = WebLog()
     # while True:
-    # time.sleep(random.uniform(0, 3))
-    web_log.sample_one_log(random.randint(10, 100))
+    #    time.sleep(random.uniform(0, 3))
+    web_log.sample_one_log(random.randint(100000000, 1000000000))
 
