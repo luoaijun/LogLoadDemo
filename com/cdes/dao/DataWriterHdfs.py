@@ -1,11 +1,13 @@
 import time
 import os.path
+from os import path
+
 from hdfs import InsecureClient, Client
 
 from com.cdes.utils.HdfsUtils import HDFS
 
 
-class DateUtil:
+class DateUtilHdfs:
     def getFileByDate(self, message):
         client = InsecureClient("http://10.0.75.1:50070/", user='hdfs')
         hdfs = HDFS()
@@ -32,14 +34,20 @@ class DateUtil:
 
         # 创建一个文件，以‘timeFile_’+具体时间为文件名称
         fileDir = fileDay + '/access_' + mdhms + '.log'
+        fileLocal= path.dirname(path.dirname(__file__))+"\data"+'/access_' + mdhms + '.log'
 
-        # out = open(fileDir, 'a+', encoding='utf-8')
         # 在该文件中写入当前系统时间字符串
-        client.put(fileDir)
+        out = open(fileLocal, 'a+', encoding='utf-8')
+        # 在该文件中写入当前系统时间字符串
+        out.write("")
+        if not client.checksum(fileDir):
+            client.upload(fileDay, fileLocal, cleanup=True)
         client.write(fileDir, message, overwrite=False, append=True, encoding='utf-8')
         # client.append_to_hdfs(client, fileDir, message)
         # out.write(message)
         # out.close()
+        out.close()
+
 
 
 if __name__ == '__main__':
@@ -47,3 +55,4 @@ if __name__ == '__main__':
     print(client.checksum("/data/weibo/PurchaseRedemptionData/mfd_bank_shibor.csv"))
     print(client.list("/"))
     print(client.makedirs("/data/i"))
+

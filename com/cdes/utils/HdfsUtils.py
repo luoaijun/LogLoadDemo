@@ -68,7 +68,8 @@ class HDFS:
 def _main_(self):
     hdfs = HDFS()
     # client = Client(url, root=None, proxy=None, timeout=None, session=None)
-    # client = Client("http://hadoop:50070")
+    client = Client("http://hadoop:50070")
+
     client = InsecureClient("http://10.0.75.1:50070/", user='hdfs')
     # client = InsecureClient("http://120.78.186.82:50070", user='ann');
     print(client)

@@ -1,7 +1,7 @@
 import time
 import os.path
 
-class DateUtil:
+class DateUtilLocal:
     def getFileByDate(self,message):
         #获得当前系统时间的字符串
         localtime=time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
@@ -38,5 +38,5 @@ class DateUtil:
         out.write(message)
         out.close()
 if __name__ == '__main__':
-    utils = DateUtil()
+    utils = DateUtilLocal()
     utils.getFileByDate("你好",)

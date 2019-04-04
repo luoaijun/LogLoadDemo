@@ -4,7 +4,8 @@
 import random
 import time
 
-from com.cdes.dao.DataWriterHdfs import DateUtil
+from com.cdes.dao.DataWriterHdfs import DateUtilHdfs
+from com.cdes.dao.DataWriterLocal import DateUtilLocal
 
 
 class WebLog(object):
@@ -55,15 +56,19 @@ class WebLog(object):
         query_str = random.sample(self.search_keyword, 1)
         return refer_str[0].format(query=query_str[0])
 
-    def sample_one_log(self, count):
-        dateWriter = DateUtil()
+    def sample_one_log(self, count,index):
+        dateWriterHdfs = DateUtilHdfs()
+        dataWriterLocal = DateUtilLocal()
         time_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         while count > 1:
             query_log = "{ip} - - [{local_time}] \"GET /{url} HTTP/1.1\" 200 0 \"{refer}\" \"{user_agent}\" \"-\"".format(
                 ip=self.sample_ip(), local_time=time_str, url=self.sample_url(), refer=self.sample_refer(),
                 user_agent=self.sample_user_agent())
             print(query_log)
-            dateWriter.getFileByDate(query_log)
+            if index == 1:
+                dateWriterHdfs.getFileByDate(query_log+"\n")
+            elif index == 0 :
+                dataWriterLocal.getFileByDate(query_log+"\n")
             count = count - 1
 
 
@@ -71,5 +76,4 @@ if __name__ == "__main__":
     web_log = WebLog()
     # while True:
     #    time.sleep(random.uniform(0, 3))
-    web_log.sample_one_log(random.randint(100000000, 1000000000))
-
+    web_log.sample_one_log(random.randint(100000000, 1000000000),1)
