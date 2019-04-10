@@ -1,7 +1,7 @@
 # !coding:utf-8
 import sys
 from hdfs.client import Client, InsecureClient
-
+from hdfs3 import HDFileSystem
 
 # 关于python操作hdfs的API可以查看官网:
 # https://hdfscli.readthedocs.io/en/latest/api.html
@@ -69,17 +69,6 @@ def _main_(self):
     hdfs = HDFS()
     # client = Client(url, root=None, proxy=None, timeout=None, session=None)
     client = Client("http://hadoop:50070")
-
     client = InsecureClient("http://10.0.75.1:50070/", user='hdfs')
-    # client = InsecureClient("http://120.78.186.82:50070", user='ann');
     print(client)
-    # move_or_rename(client,'/input/2.csv', '/input/emp.csv')
-    # read_hdfs_file(client,'/input/emp.csv')
     hdfs.put_to_hdfs(client, 'F:\\Maven\\work\\CDES\\code\\LogDemo', '/data')
-    # append_to_hdfs(client,'/input/emp.csv','我爱你'+'\n')
-    # write_to_hdfs(client, '/emp.csv', "sadfafdadsf")
-    # read_hdfs_file(client,'/input/emp.csv')
-    # move_or_rename(client,'/input/emp.csv', '/input/2.csv')
-    # mkdirs(client,'/input/python')
-    # print(list(client, '/'))
-    # chown(client,'/input/1.csv', 'root')

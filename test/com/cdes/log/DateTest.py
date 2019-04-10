@@ -15,7 +15,7 @@ class DateUtils:
         #具体时间 小时分钟毫秒
         mdhms=time.strftime('%Y%m%d%H%M%S',time.localtime(time.time()))
 
-        fileYear='C:\work\\data\\node\\'+year
+        fileYear='F:\\Maven\\work\\CDES\\data\\test\\'+year
         fileMonth=fileYear+'/'+month
         fileDay=fileMonth+'/'+day
 
@@ -39,4 +39,3 @@ class DateUtils:
         out.close()
 if __name__ == '__main__':
     utils = DateUtils()
-    utils.getFileByDate("你好")
