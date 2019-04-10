@@ -37,6 +37,3 @@ class DateUtilLocal:
         #在该文件中写入当前系统时间字符串
         out.write(message)
         out.close()
-if __name__ == '__main__':
-    utils = DateUtilLocal()
-    utils.getFileByDate("你好",)

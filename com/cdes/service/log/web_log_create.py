@@ -1,19 +1,35 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+import queue
 import random
+import threading
 import time
+
+from hdfs import InsecureClient
 
 from com.cdes.dao.DataWriterHdfs import DateUtilHdfs
 from com.cdes.dao.DataWriterLocal import DateUtilLocal
 
+exitFlag = 0
+queueLock = threading.Lock()
+threads = []
+workQueue = queue.Queue(10000)
+threadID = 1
 
-class WebLog(object):
+
+class WebLog(threading.Thread):
+
+    def __init__(self, threadID, tName, q, index):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.tName = tName
+        self.q = q
+        self.index = index
+
     # 类属性，由所有类的对象共享
     site_url_base = "http://www.xxx.com/"
 
-    # 基本构造函数
-    def __init__(self):
+    def init(self):
         #  前面7条是IE,所以大概浏览器类型70%为IE ，接入类型上，20%为移动设备，分别是7和8条,5% 为空
         #  https://github.com/mssola/user_agent/blob/master/all_test.go
         self.user_agent_dist = {0.0: "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)",
@@ -56,24 +72,56 @@ class WebLog(object):
         query_str = random.sample(self.search_keyword, 1)
         return refer_str[0].format(query=query_str[0])
 
-    def sample_one_log(self, count,index):
-        dateWriterHdfs = DateUtilHdfs()
-        dataWriterLocal = DateUtilLocal()
-        time_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        while count > 1:
-            query_log = "{ip} - - [{local_time}] \"GET /{url} HTTP/1.1\" 200 0 \"{refer}\" \"{user_agent}\" \"-\"".format(
-                ip=self.sample_ip(), local_time=time_str, url=self.sample_url(), refer=self.sample_refer(),
-                user_agent=self.sample_user_agent())
-            print(query_log)
-            if index == 1:
-                dateWriterHdfs.getFileByDate(query_log+"\n")
-            elif index == 0 :
-                dataWriterLocal.getFileByDate(query_log+"\n")
-            count = count - 1
+    def run(self):
+      self.process_data(self.tName,self.q)
+
+    def process_data(self, threadName, q):
+        client = InsecureClient("http://10.0.75.1:50070/", user="hdfs")
+
+        global exitFlag, threadID, queueLock, workQueue, thread
+        while not exitFlag:
+            queueLock.acquire()
+            if not workQueue.empty():
+                data = q.get()
+                queueLock.release()
+                dateWriterHdfs = DateUtilHdfs()
+                dataWriterLocal = DateUtilLocal()
+                time_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+                query_log = "{ip} - - [{local_time}] \"GET /{url} HTTP/1.1\" 200 0 \"{refer}\" \"{user_agent}\" \"-\"".format(
+                    ip=self.sample_ip(), local_time=time_str, url=self.sample_url(), refer=self.sample_refer(),
+                    user_agent=self.sample_user_agent())
+                # print(query_log)
+                print("%s processing %s" % (threadName, data))
+                if self.index == 1:
+                    dateWriterHdfs.getFileByDate(client,query_log + "\n")
+                elif self.index == 0:
+                    dataWriterLocal.getFileByDate(query_log + "\n")
+            else:
+                queueLock.release()
+            time.sleep(1)
 
 
-if __name__ == "__main__":
-    web_log = WebLog()
-    # while True:
-    #    time.sleep(random.uniform(0, 3))
-    web_log.sample_one_log(random.randint(100000000, 1000000000),1)
+class RUN:
+    def sample_one_log(self, threadNum,count, index):
+        global exitFlag, threadID, queueLock, workQueue, thread
+        queueLock.acquire()
+        for i in range(count):
+            workQueue.put(i)
+        queueLock.release()
+        for tName in range(threadNum):
+            thread = WebLog(threadID, tName, workQueue, index)
+            thread.init()
+            thread.start()
+            threads.append(thread)
+            threadID += 1
+            # 等待队列清空
+        while not workQueue.empty():
+            pass
+            # 通知线程是时候退出
+        exitFlag = 1
+
+        # 等待所有线程完成
+        for t in threads:
+            t.join()
+        print("退出主线程")
+

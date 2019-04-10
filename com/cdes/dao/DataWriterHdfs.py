@@ -7,9 +7,10 @@ from hdfs import InsecureClient, Client
 from com.cdes.utils.HdfsUtils import HDFS
 from hdfs3 import HDFileSystem
 
+
 class DateUtilHdfs:
-    def getFileByDate(self, message):
-        client = InsecureClient("http://10.0.75.1:50070/",user="hdfs")
+
+    def getFileByDate(self,client, message):
         hdfs = HDFS()
 
         # 获得当前系统时间的字符串
@@ -27,14 +28,13 @@ class DateUtilHdfs:
         fileYear = '/data/log/' + year
         fileMonth = fileYear + '/' + month
         fileDay = fileMonth + '/' + day
-
         hdfs.mkdirs(client, fileYear)
         hdfs.mkdirs(client, fileMonth)
         hdfs.mkdirs(client, fileDay)
 
         # 创建一个文件，以‘timeFile_’+具体时间为文件名称
         fileDir = fileDay + '/access_' + mdhms + '.log'
-        fileLocal= path.dirname(path.dirname(__file__))+"\data"+'/access_' + mdhms + '.log'
+        fileLocal = path.dirname(path.dirname(__file__)) + "\data" + '/access_' + mdhms + '.log'
         if not os.path.exists(fileLocal):
             # 在该文件中写入当前系统时间字符串
             out = open(fileLocal, 'a+', encoding='utf-8')
@@ -44,13 +44,5 @@ class DateUtilHdfs:
             client.upload(fileDay, fileLocal, cleanup=True)
             out.close()
         client.write(fileDir, message, overwrite=False, append=True, encoding='utf-8')
+
         # client.append_to_hdfs(client, fileDir, message)
-
-
-
-if __name__ == '__main__':
-    client = InsecureClient("http://10.0.75.1:50070/", user='hdfs')
-    print(client.checksum("/data/weibo/PurchaseRedemptionData/mfd_bank_shibor.csv"))
-    print(client.list("/"))
-    print(client.makedirs("/data/i"))
-
