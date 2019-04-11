@@ -17,7 +17,7 @@ workQueue = queue.Queue(10000)
 threadID = 1
 
 
-class WebLog(threading.Thread):
+class WebLogOffline(threading.Thread):
 
     def __init__(self, threadID, tName, q, index):
         threading.Thread.__init__(self)
@@ -67,13 +67,12 @@ class WebLog(threading.Thread):
     def sample_refer(self):
         if random.uniform(0, 1) > 0.7:  # 70% 流量有refer
             return "-"
-
         refer_str = random.sample(self.http_refer, 1)
         query_str = random.sample(self.search_keyword, 1)
         return refer_str[0].format(query=query_str[0])
 
     def run(self):
-      self.process_data(self.tName,self.q)
+        self.process_data(self.tName, self.q)
 
     def process_data(self, threadName, q):
         client = InsecureClient("http://10.0.75.1:50070/", user="hdfs")
@@ -82,8 +81,8 @@ class WebLog(threading.Thread):
         while not exitFlag:
             queueLock.acquire()
             if not workQueue.empty():
-                data = q.get()
                 queueLock.release()
+                data = q.get()
                 dateWriterHdfs = DateUtilHdfs()
                 dataWriterLocal = DateUtilLocal()
                 time_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -91,9 +90,9 @@ class WebLog(threading.Thread):
                     ip=self.sample_ip(), local_time=time_str, url=self.sample_url(), refer=self.sample_refer(),
                     user_agent=self.sample_user_agent())
                 # print(query_log)
-                print("%s processing %s" % (threadName, data))
+                # print("%s processing %s" % (threadName, data))
                 if self.index == 1:
-                    dateWriterHdfs.getFileByDate(client,query_log + "\n")
+                    dateWriterHdfs.getFileByDate(client, query_log + "\n",1)
                 elif self.index == 0:
                     dataWriterLocal.getFileByDate(query_log + "\n")
             else:
@@ -101,15 +100,16 @@ class WebLog(threading.Thread):
             time.sleep(1)
 
 
-class RUN:
-    def sample_one_log(self, threadNum,count, index):
+class RUNOffline:
+    def sample_one_log(self, threadNum, count, index):
         global exitFlag, threadID, queueLock, workQueue, thread
         queueLock.acquire()
         for i in range(count):
             workQueue.put(i)
         queueLock.release()
+        # 创建线程
         for tName in range(threadNum):
-            thread = WebLog(threadID, tName, workQueue, index)
+            thread = WebLogOffline(threadID, tName, workQueue, index)
             thread.init()
             thread.start()
             threads.append(thread)
@@ -124,4 +124,3 @@ class RUN:
         for t in threads:
             t.join()
         print("退出主线程")
-

@@ -10,7 +10,7 @@ from hdfs3 import HDFileSystem
 
 class DateUtilHdfs:
 
-    def getFileByDate(self,client, message):
+    def getFileByDate(self, client, message, i):
         hdfs = HDFS()
 
         # 获得当前系统时间的字符串
@@ -24,8 +24,10 @@ class DateUtilHdfs:
         day = time.strftime('%d', time.localtime(time.time()))
         # 具体时间 小时分钟毫秒
         mdhms = time.strftime('%Y%m%d', time.localtime(time.time()))
-
-        fileYear = '/data/log/' + year
+        if i == 1:
+            fileYear = '/data/log/streaming/' + year
+        elif i == 0:
+            fileYear = '/data/log/offline/' + year
         fileMonth = fileYear + '/' + month
         fileDay = fileMonth + '/' + day
         hdfs.mkdirs(client, fileYear)

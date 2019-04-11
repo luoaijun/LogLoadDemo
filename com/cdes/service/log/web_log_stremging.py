@@ -10,7 +10,7 @@ from com.cdes.dao.DataWriterHdfs import DateUtilHdfs
 from com.cdes.dao.DataWriterLocal import DateUtilLocal
 
 
-class WebLog(object):
+class WebLogStreming(object):
     # 类属性，由所有类的对象共享
     site_url_base = "http://www.xxx.com/"
 
@@ -70,14 +70,9 @@ class WebLog(object):
                 user_agent=self.sample_user_agent())
             print(query_log)
             if index == 1:
-                dateWriterHdfs.getFileByDate(client,query_log+"\n")
+                dateWriterHdfs.getFileByDate(client,query_log+"\n",1)
             elif index == 0 :
                 dataWriterLocal.getFileByDate(query_log+"\n")
             count = count - 1
 
 
-if __name__ == "__main__":
-    web_log = WebLog()
-    # while True:
-    #    time.sleep(random.uniform(0, 3))
-    web_log.sample_one_log(random.randint(100000000, 1000000000),1)
