@@ -13,7 +13,7 @@ from com.cdes.dao.DataWriterLocal import DateUtilLocal
 exitFlag = 0
 queueLock = threading.Lock()
 threads = []
-workQueue = queue.Queue(10000)
+workQueue = queue.Queue(10000000)
 threadID = 1
 
 
@@ -95,6 +95,7 @@ class WebLogOffline(threading.Thread):
                     dateWriterHdfs.getFileByDate(client, query_log + "\n",1)
                 elif self.index == 0:
                     dataWriterLocal.getFileByDate(query_log + "\n")
+
             else:
                 queueLock.release()
             time.sleep(1)

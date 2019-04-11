@@ -10,7 +10,7 @@ from hdfs3 import HDFileSystem
 
 class DateUtilHdfs:
 
-    def getFileByDate(self, client, message, i):
+    def getFileByDate(self, client):
         hdfs = HDFS()
 
         # 获得当前系统时间的字符串
@@ -24,19 +24,21 @@ class DateUtilHdfs:
         day = time.strftime('%d', time.localtime(time.time()))
         # 具体时间 小时分钟毫秒
         mdhms = time.strftime('%Y%m%d', time.localtime(time.time()))
-        if i == 1:
-            fileYear = '/data/log/streaming/' + year
-        elif i == 0:
-            fileYear = '/data/log/offline/' + year
+
+        fileYear = '/data/log/offline/' + year
+
+        fileYearLocal='F:/Maven/work/CDES/data/log/'+year
+        fileMonthLocal = fileYearLocal + '/' + month
+        fileDayLocal = fileMonthLocal + '/' + day
+
         fileMonth = fileYear + '/' + month
         fileDay = fileMonth + '/' + day
         hdfs.mkdirs(client, fileYear)
         hdfs.mkdirs(client, fileMonth)
         hdfs.mkdirs(client, fileDay)
 
-        # 创建一个文件，以‘timeFile_’+具体时间为文件名称
-        fileDir = fileDay + '/access_' + mdhms + '.log'
-        fileLocal = path.dirname(path.dirname(__file__)) + "\data" + '/access_' + mdhms + '.log'
+
+        fileLocal = fileDayLocal + '/access_' + mdhms + '.log'
         if not os.path.exists(fileLocal):
             # 在该文件中写入当前系统时间字符串
             out = open(fileLocal, 'a+', encoding='utf-8')
@@ -46,6 +48,9 @@ class DateUtilHdfs:
             hdfs.mkdirs(client, fileDay)
             client.upload(fileDay, fileLocal, cleanup=True)
             out.close()
-        client.write(fileDir, message, overwrite=False, append=True, encoding='utf-8')
-
         # client.append_to_hdfs(client, fileDir, message)
+if __name__ == '__main__':
+    client = InsecureClient("http://10.0.75.1:50070/", user="hdfs")
+
+    uploadLog = DateUtilHdfs()
+    uploadLog.getFileByDate(client)

@@ -32,7 +32,7 @@ class DateUtilLocal:
                     os.mkdir(fileDay)
 
         #创建一个文件，以‘timeFile_’+具体时间为文件名称
-        fileDir=fileDay+'/access_'+mdhms+'.txt'
+        fileDir=fileDay+'/access_'+mdhms+'.log'
         out=open(fileDir,'a+',encoding='utf-8')
         #在该文件中写入当前系统时间字符串
         out.write(message)
