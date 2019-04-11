@@ -25,9 +25,9 @@ class DateUtilHdfs:
         # 具体时间 小时分钟毫秒
         mdhms = time.strftime('%Y%m%d', time.localtime(time.time()))
         if i == 1:
-            fileYear = '/data/log/streaming/' + year
+            fileYear = '/data/log/original_log/streaming/' + year
         elif i == 0:
-            fileYear = '/data/log/offline/' + year
+            fileYear = '/data/log/original_log/offline/' + year
         fileMonth = fileYear + '/' + month
         fileDay = fileMonth + '/' + day
         hdfs.mkdirs(client, fileYear)

@@ -25,7 +25,7 @@ class DateUtilHdfs:
         # 具体时间 小时分钟毫秒
         mdhms = time.strftime('%Y%m%d', time.localtime(time.time()))
 
-        fileYear = '/data/log/offline/' + year
+        fileYear = '/data/log/original_log/offline/' + year
 
         fileYearLocal='F:/Maven/work/CDES/data/log/'+year
         fileMonthLocal = fileYearLocal + '/' + month
@@ -39,7 +39,7 @@ class DateUtilHdfs:
 
 
         fileLocal = fileDayLocal + '/access_' + mdhms + '.log'
-        if not os.path.exists(fileLocal):
+        if os.path.exists(fileLocal):
             # 在该文件中写入当前系统时间字符串
             out = open(fileLocal, 'a+', encoding='utf-8')
             # 在该文件中写入当前系统时间字符串
