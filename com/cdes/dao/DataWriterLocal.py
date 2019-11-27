@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import time
 import os.path
 
@@ -15,7 +16,7 @@ class DateUtilLocal:
         #具体时间 小时分钟毫秒
         mdhms=time.strftime('%Y%m%d',time.localtime(time.time()))
 
-        fileYear='F:/Maven/work/CDES/data/log/'+year
+        fileYear='F:/Maven/work/aiPool/data/log/'+year
         fileMonth=fileYear+'/'+month
         fileDay=fileMonth+'/'+day
 

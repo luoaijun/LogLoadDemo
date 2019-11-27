@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from hdfs3 import HDFileSystem
 class HdfsUtils:
     hdfs =HDFileSystem(host='10.0.75.1', port=8020)

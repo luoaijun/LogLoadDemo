@@ -1,10 +1,13 @@
+# -*- coding: utf-8 -*-
 import time
 import os.path
 from os import path
 
 from hdfs import InsecureClient, Client
 
+
 from com.cdes.utils.HdfsUtils import HDFS
+
 from hdfs3 import HDFileSystem
 
 

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import time
 import os.path
 from os import path
@@ -25,9 +26,9 @@ class DateUtilHdfs:
         # 具体时间 小时分钟毫秒
         mdhms = time.strftime('%Y%m%d', time.localtime(time.time()))
 
-        fileYear = '/data/log/original_log/offline/' + year
+        fileYear = '/user/hdfs/data/log/original_log/offline/' + year
 
-        fileYearLocal='F:/Maven/work/CDES/data/log/'+year
+        fileYearLocal='F:/Maven/work/aiPool/data/log/'+year
         fileMonthLocal = fileYearLocal + '/' + month
         fileDayLocal = fileMonthLocal + '/' + day
 
@@ -50,7 +51,7 @@ class DateUtilHdfs:
             out.close()
         # client.append_to_hdfs(client, fileDir, message)
 if __name__ == '__main__':
-    client = InsecureClient("http://10.0.75.1:50070/", user="hdfs")
+    client = InsecureClient("http://192.168.186.102:50070/", user="hdfs")
 
     uploadLog = DateUtilHdfs()
     uploadLog.getFileByDate(client)
